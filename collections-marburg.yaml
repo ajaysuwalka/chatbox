@@ -1,0 +1,34 @@
+version: '1'
+name: marburg-admin
+images:
+- name: marburg-admin-app-image
+  url: registry2.swarm.devfactory.com/aurea/jive/devspaces/marburg-administration:93ec18525a06a183d5c37cfdfcbfc190cfbb304a
+  env:
+  - name: MARBURG_WAR_URL
+    value: 'https://nexus.devfactory.com/repository/jive-releases/com/jivesoftware/marburg/administration/1.1/administration-1.1.war'
+  - name: DB_HOST
+    value: 'localhost'
+  - name: DB_PORT
+    value: '5432'
+- name: marburg-admin-db-image
+  url: postgres:9.6
+  env:
+  - name: POSTGRES_PASSWORD
+    value: 'postgres'
+configs:
+- name: marburg-admin
+  bind-path: /home/marcin/tmp/devspaces/marburg
+  containers:
+  - name: marburg-admin-app
+    image: marburg-admin-app-image
+    ports:
+    - port: 8080
+      protocol: TCP
+    volumes:
+    - host_path: ''
+      container_path: /data
+  - name: marburg-admin-db
+    image: marburg-admin-db-image
+    ports:
+    - port: 5432
+      protocol: TCP
